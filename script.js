@@ -49,6 +49,11 @@ class Pipe {
 
 var rects = [];
 var birb;
+var bg;
+
+function preload() {
+  bg = loadImage('bg.png');
+}
 
 function setup() {
   createCanvas(640, 360);
@@ -57,7 +62,8 @@ function setup() {
 }
 
 function draw() {
-  background(127);
+  image(bg, 0,0, width, height);
+
 
   if (frameCount % 60 == 0) {
     console.log(frameCount);
