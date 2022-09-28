@@ -4,6 +4,7 @@ var bg, birb_img;
 var totalPopulation = 50;
 let activeBirds = [];
 let allBirds = [];
+var smartestBird;
 
 function preload() {
   bg = loadImage('bg.png');
@@ -47,6 +48,11 @@ function draw() {
     
   });
 
+  // one left? Then this is the smartest bird
+  if(activeBirds.length == 1){
+    smartestBird = activeBirds[0];
+  }
+
   // If we're out of birds go to the next generation
   if (activeBirds.length == 0) {
     reset();
@@ -80,7 +86,13 @@ function reset(){
 
 function newBirds(){
   for (let i = 0; i < totalPopulation; i++) {
-    let bird = new Bird();
+    let bird
+    if(smartestBird){
+      bird = new Bird(smartestBird.brain);
+    }
+    else{
+      bird = new Bird();
+    }
     activeBirds[i] = bird;
     allBirds[i] = bird;
   }

@@ -1,3 +1,13 @@
+function mutate(x) {
+  if (random(1) < 0.1) {
+    let offset = randomGaussian() * 0.5;
+    let newx = x + offset;
+    return newx;
+  } else {
+    return x;
+  }
+}
+
 class Bird {
   constructor(brain) {
     this.x = 640 / 3;
@@ -7,7 +17,6 @@ class Bird {
     this.velocity = 0;
     this.acceleration = 0.9;
     this.gravity = 0.9;
-
 
      // Is this a copy of another Bird or a new one?
     // The Neural Network is the bird's "brain"
