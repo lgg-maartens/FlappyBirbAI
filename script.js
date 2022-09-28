@@ -2,77 +2,8 @@ var rects = [];
 var birb;
 var bg, birb_img;
 
-class Birb {
-  constructor() {
-    this.x = 640 / 3;
-    this.y = 100;
-    this.h = 30;
-    this.w = 60;
-    this.velocity = 0;
-    this.acceleration = 0.9;
-    this.gravity = 0.9;
-  }
 
-  draw() {
 
-    if (this.y >= height) {
-      this.y = height;
-
-      if (this.velocity < 0) {
-        this.y += this.velocity;
-      }
-    }
-
-    else {
-      this.velocity += this.acceleration;
-      this.y += this.velocity;
-    }
-
-    // rotation
-    // translate(this.x, this.y);
-    // if (this.velocity > 0) {
-    //   rotate(10);
-    //   image(birb_bg, -(this.w / 2), -(this.h / 2), this.w, this.h);
-    //   rotate(-10);
-    // } else {
-    //   rotate(-10);
-    //   image(birb_bg, -(this.w / 2), -(this.h / 2), this.w, this.h);
-    //   rotate(10);
-    // }
-    // translate(-this.x, -this.y);
-
-    // without rotation
-    image(birb_bg, this.x, this.y, this.w, this.h);
-  }
-}
-
-class Pipe {
-  constructor(x, y, w, h, color) {
-    this.x = x;
-    this.y = y;
-    this.w = w;
-    this.h = h;
-    this.vx = -5;
-    this.color = color
-  }
-
-  drawRect() {
-    fill(this.color);
-    this.x = this.x + this.vx;
-    rect(this.x, this.y, this.w, this.h);
-  }
-
-  isColliding() {
-    // check x axis-collision
-    if (birb.x + birb.w > this.x && birb.x < this.x + this.w) {
-      // check y-axis collision
-      if (birb.y + birb.h > this.y && birb.y < this.y + this.h) {
-        return true;
-      }      
-    }
-    return false;
-  }
-}
 
 
 function preload() {
@@ -93,20 +24,22 @@ function draw() {
 
   if (frameCount % 60 == 0) {
     addPipes();
+
+    // remove pipes
+    if(rects.length > 6){
+      rects.splice(0, 2);
+    }    
   }
 
   birb.draw();
 
   rects.forEach((r) => {
     r.drawRect();
+    
     if(r.isColliding()){
-      r.color = "red";
-    }
-    else{
-      r.color = "green";
+      console.log("hit")
     }
   });
-
 }
 
 function keyPressed() {
