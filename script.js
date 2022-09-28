@@ -1,10 +1,9 @@
-var rects = [];
+var pipes = [];
 var birb;
 var bg, birb_img;
-
-
-
-
+var totalPopulation = 50;
+let activeBirds = [];
+let allBirds = [];
 
 function preload() {
   bg = loadImage('bg.png');
@@ -15,7 +14,7 @@ function setup() {
   createCanvas(640, 360);
   angleMode(DEGREES);
 
-  birb = new Birb();
+  newBirds();
 }
 
 function draw() {
@@ -26,20 +25,32 @@ function draw() {
     addPipes();
 
     // remove pipes
-    if(rects.length > 6){
-      rects.splice(0, 2);
+    if(pipes.length > 6){
+      pipes.splice(0, 2);
     }    
   }
 
-  birb.draw();
+  activeBirds.forEach(birb =>{
+    birb.draw();
+    birb.think(pipes);
+  })
+  
 
-  rects.forEach((r) => {
-    r.drawRect();
+  pipes.forEach((p) => {
+    p.drawRect();
+
+    activeBirds.forEach(birb =>{
+      if(p.isColliding(birb)){
+        birb.hit();
+      }
+    });
     
-    if(r.isColliding()){
-      console.log("hit")
-    }
   });
+
+  // If we're out of birds go to the next generation
+  if (activeBirds.length == 0) {
+    reset();
+  }
 }
 
 function keyPressed() {
@@ -58,6 +69,19 @@ function addPipes() {
   let newRectBot = new Pipe(640, randHeight + gapHeight, 60, height + (randHeight + gapHeight), "green");
 
 
-  rects.push(newRectBot);
-  rects.push(newRectTop);
+  pipes.push(newRectBot);
+  pipes.push(newRectTop);
+}
+
+function reset(){
+  pipes = [];
+  newBirds();
+}
+
+function newBirds(){
+  for (let i = 0; i < totalPopulation; i++) {
+    let bird = new Bird();
+    activeBirds[i] = bird;
+    allBirds[i] = bird;
+  }
 }

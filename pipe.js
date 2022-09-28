@@ -5,7 +5,9 @@ class Pipe {
     this.w = w;
     this.h = h;
     this.vx = -5;
-    this.color = color
+    this.color = color;
+
+    this.bottom = this.y + this.h;
   }
 
   drawRect() {
@@ -14,7 +16,7 @@ class Pipe {
     rect(this.x, this.y, this.w, this.h);
   }
 
-  isColliding() {   
+  isColliding(birb) {   
     // check x axis-collision
     if (birb.x + birb.w > this.x && birb.x < this.x + this.w) {
       // check y-axis collision
