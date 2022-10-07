@@ -15,8 +15,8 @@ class Bird {
     this.h = 30;
     this.w = 60;
     this.velocity = 0;
-    this.acceleration = 0.9;
-    this.gravity = 0.9;
+    this.gravity = 0.6;
+    this.jump = -7;
 
      // Is this a copy of another Bird or a new one?
     // The Neural Network is the bird's "brain"
@@ -24,7 +24,7 @@ class Bird {
       this.brain = brain.copy();
       this.brain.mutate(mutate);
     } else {
-      this.brain = new NeuralNetwork(5, 8, 2);
+      this.brain = new NeuralNetwork(5, 50, 2);
     }
   }
 
@@ -38,7 +38,7 @@ class Bird {
     }
 
     else {
-      this.velocity += this.acceleration;
+      this.velocity += this.gravity;
       this.y += this.velocity;
     }
 
@@ -51,7 +51,7 @@ class Bird {
   }
 
   up(){
-    this.velocity = -10;
+    this.velocity = this.jump;
   }
 
   hit(){
@@ -61,26 +61,30 @@ class Bird {
   
   think(pipes) {
     // First find the closest pipe
-    let closest = null;
+    let closestPipeTop = null;
+    let closestPipeBot = null;
     let record = Infinity;
     
     for (let i = 0; i < pipes.length; i++) {
       let diff = pipes[i].x - this.x;
       if (diff > 0 && diff < record) {
         record = diff;
-        closest = pipes[i];
+        closestPipeTop = pipes[i];
+        closestPipeBot = pipes[i];
       }
     }
 
-    if (closest != null) {
+    if (closestPipeTop != null) {
+      let gapTop = closestPipeTop.y + closestPipeTop.h;
+      let gapBottom = closestPipeBot.y;
       // Now create the inputs to the neural network
       let inputs = [];
       // x position of closest pipe
-      inputs[0] = map(closest.x, this.x, width, 0, 1);
+      inputs[0] = map(closestPipeTop.x, this.x, width, 0, 1);
       // top of closest pipe opening
-      inputs[1] = map(closest.y, 0, height, 0, 1);
+      inputs[1] = map(gapTop, 0, height, 0, 1);
       // bottom of closest pipe opening
-      inputs[2] = map(closest.bottom, 0, height, 0, 1);
+      inputs[2] = map(gapBottom, 0, height, 0, 1);
       // bird's y position
       inputs[3] = map(this.y, 0, height, 0, 1);
       // bird's y velocity

@@ -1,10 +1,12 @@
 var pipes = [];
 var birb;
 var bg, birb_img;
-var totalPopulation = 50;
+var totalPopulation = 500;
 let activeBirds = [];
 let allBirds = [];
 var smartestBird;
+var generation = 0;
+var score = highscore = 0;
 
 function preload() {
   bg = loadImage('bg.png');
@@ -20,15 +22,21 @@ function setup() {
 
 function draw() {
   image(bg, 0, 0, width, height);
+  fill(255)
+  text('generation:' + generation, 10, 20);
+  text('score:' + score, 10, 30);
+  text('highscore:' + highscore, 10, 40);
+  text('living birds:' + activeBirds.length, 10, 50);
 
-
-  if (frameCount % 60 == 0) {
+  if (frameCount % 80 == 0) {
     addPipes();
 
     // remove pipes
     if(pipes.length > 6){
       pipes.splice(0, 2);
     }    
+
+    score++;
   }
 
   activeBirds.forEach(birb =>{
@@ -44,8 +52,7 @@ function draw() {
       if(p.isColliding(birb)){
         birb.hit();
       }
-    });
-    
+    });    
   });
 
   // one left? Then this is the smartest bird
@@ -66,10 +73,9 @@ function keyPressed() {
 }
 
 function addPipes() {
-
-  let randHeight = random(height / 2);
   let gapHeight = 150;
-
+  let randHeight = random(height - gapHeight);
+  
 
   let newRectTop = new Pipe(640, 0, 60, randHeight, "green");
   let newRectBot = new Pipe(640, randHeight + gapHeight, 60, height + (randHeight + gapHeight), "green");
@@ -81,10 +87,18 @@ function addPipes() {
 
 function reset(){
   pipes = [];
+  generation++;
+
+  if(score > highscore)
+    highscore=score;
+
+  score = 0;
+  
   newBirds();
 }
 
 function newBirds(){
+  
   for (let i = 0; i < totalPopulation; i++) {
     let bird
     if(smartestBird){
@@ -95,5 +109,5 @@ function newBirds(){
     }
     activeBirds[i] = bird;
     allBirds[i] = bird;
-  }
+  }  
 }
